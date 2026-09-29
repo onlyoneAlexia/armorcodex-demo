@@ -7,7 +7,7 @@ A hands-on demo of ArmorCodex: installing it with one command, setting a
 policy from chat, watching it block a command before it runs, and reviewing
 the activity log on the ArmorIQ dashboard.
 
-**Video demo:** (add your link)
+**Video demo:** https://x.com/onlyonealexia/status/2104918066458919046
 
 ## What ArmorCodex Does
 
