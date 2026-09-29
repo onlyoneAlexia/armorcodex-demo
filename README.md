@@ -35,14 +35,23 @@ ArmorCodex installs with a single command:
 curl -fsSL https://armoriq.ai/install_armorcodex.sh | bash
 ```
 
+![ArmorCodex installer output](screenshots/Screenshot%202026-09-29%20121340.jpg)
+*The installer checking prerequisites, wiring the Codex hooks and policy server, verifying the setup, then offering to connect my ArmorIQ account.*
+
 The installer enabled the Codex hooks, installed the plugin, and asked me
 to authorize the terminal against my ArmorIQ account with a device code.
 After confirming the code in the browser, the terminal reported
 "terminal authorized" and the install completed.
 
+![Terminal authorized in the browser](screenshots/Screenshot%202026-09-29%20121154.jpg)
+*Device authorization confirmed in the browser.*
+
 When I first started Codex, it detected 5 new hooks and asked me to review
 and trust them. I chose "Trust all and continue," since those hooks are
 ArmorCodex itself. A nice detail: hooks do not run until a human approves them.
+
+![Codex asking to review 5 new hooks](screenshots/Screenshot%202026-09-29%20121501.jpg)
+*Codex asking me to review the 5 new ArmorCodex hooks before they are allowed to run.*
 
 ## Demo
 
@@ -59,6 +68,9 @@ instruction and did not read `.env`. Two layers of defense working
 together: the model's own judgment, with ArmorCodex behind it as a hard
 guardrail.
 
+![Intent plan registered and injection refused](screenshots/Screenshot%202026-09-29%20121750.jpg)
+*The intent plan is registered first; Codex lists the files and refuses the hidden instruction to print .env.*
+
 ### 2. Setting a policy from chat
 
 I typed a plain command straight into the Codex chat, no slash:
@@ -71,17 +83,26 @@ ArmorCodex replied that it had added a deny rule for bash, kept my existing
 rules, and moved the policy to version 1. I then typed `armor yes`, which
 reported the rule was already in place with no further changes.
 
+![Deny rule added from chat](screenshots/Screenshot%202026-09-29%20121922.jpg)
+*Setting a policy from chat: a deny rule for Bash is added and the policy moves to version 1.*
+
 ### 3. A command is blocked before it runs
 
 With the deny rule active, I asked Codex to run `ls`. ArmorCodex blocked it
 at the hook:
 
 ```
-LS was blocked by ArmorCodex deny bash rule. The command did not run.
+Blocked by hook
+└ ArmorCodex policy deny: deny-bash
+
+ls was blocked by ArmorCodex's deny-bash rule. The command did not run.
 ```
 
 I repeated this with `echo hello`, which was also blocked by the hook. This
 is the core of the demo: the command is stopped before execution, not after.
+
+![ls blocked by hook](screenshots/Screenshot%202026-09-29%20122118.jpg)
+*ls is blocked by the hook under the deny-bash rule. The command never ran.*
 
 ### 4. Removing the rule restores the command
 
@@ -91,12 +112,21 @@ I asked Codex to run `ls -a`, and this time it ran and listed all files,
 including `.env` and `README.md`. This proves the earlier block came from
 the policy and nothing else.
 
+![Empty policy list](screenshots/Screenshot%202026-09-29%20122919.jpg)
+*After removing the rule, the policy list is empty (policy version 2).*
+
+![ls -a runs again](screenshots/Screenshot%202026-09-29%20122814.jpg)
+*With no rules active, ls -a runs normally and lists every file, including .env.*
+
 ### 5. Dashboard logging
 
 On the ArmorIQ dashboard, the runs list showed my session activity: the
 intent plan registrations, the policy updates, and the policy version
 changes. Runs can be filtered by verdict (running, okay, blocked, held,
 failed, unknown).
+
+![ArmorIQ dashboard runs list](screenshots/Screenshot%202026-09-29%20123039.jpg)
+*The ArmorIQ dashboard runs list for my Codex session: Bash executions, intent plan registrations, and policy updates.*
 
 ## Observations and Insights
 
@@ -137,13 +167,6 @@ failed, unknown).
    stayed empty; only "okay" verdicts were logged. I relied on the terminal
    output as proof of the blocks and documented this as a finding rather
    than a failure.
-
-## Screenshots
-
-<!-- While editing this file on GitHub, drag your screenshots in here:
-     install / terminal authorized, trust hooks prompt, intent plan + ls -la,
-     policy version 1, "blocked by hook" message, empty policy list + ls -a,
-     ArmorIQ dashboard runs list -->
 
 ## Links
 
